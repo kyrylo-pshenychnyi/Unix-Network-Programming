@@ -12,11 +12,13 @@ void * thread_func( char *dummy_ptr)
     printf("This is thread function\n");
 
     int i = 0;
+    static int ret = 10;
     while ( i < 5){
         printf("%d\n",i);
         i++;
+        sleep(5);
     }
-    return 0;
+    pthread_exit((void*)&ret);
 }
 
 int main (void)
@@ -36,8 +38,18 @@ int main (void)
     } else {
         printf("Successfully created the thread with id %d\n", thread1_id);
     }
-    
+
+    ret = pthread_cancel(thread1_id);
+    if(ret == PASS ){
+        printf("Successfully cancelled the thread1 with id %d\n", thread1_id);
+    } else {
+        printf("Error in cancelling the thread\n");
+    }
+
     pthread_join(thread1_id, &ptr);
+
+//    printf("The return value from thread 1 is %d\n", *(int*)ptr);
+    return 0;
 
 }
     
