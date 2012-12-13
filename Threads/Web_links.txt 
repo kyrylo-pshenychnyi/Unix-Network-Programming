@@ -1,4 +1,6 @@
-A good place to know all the threads related things
-    
-    1. https://computing.llnl.gov/tutorials/pthreads/
+1. A good place to know all the threads related things
+    https://computing.llnl.gov/tutorials/pthreads/
 
+
+2. Thread scheduling
+    http://www.cs.cf.ac.uk/Dave/C/node31.html
