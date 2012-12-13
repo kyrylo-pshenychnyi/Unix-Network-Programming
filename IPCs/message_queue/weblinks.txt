@@ -1,2 +1,5 @@
 This files contains good internet links to learn message queue details
 
+
+1. Detailes of message queue
+     http://www.tldp.org/LDP/lpg/node27.html
