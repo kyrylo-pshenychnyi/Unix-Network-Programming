@@ -13,7 +13,8 @@
 				2. Bind()
 				3. Listen()
 				4. Accept()
-				5. Send/Recv()
+				5. Send/Recv() // Any system call which can be used for 
+				                  reading or writing on a file.eg: read, write, fput, fget
 				6. Close()
 */
 
@@ -22,11 +23,15 @@
 #include<sys/types.h>
 #include<sys/socket.h>
 #include<unistd.h>
+#include<errno.h>
+#include<arpa/inet.h>
+#include<string.h>
 
 
 int main(int argc, char * argv[]){
 	int ret;
-	int socketfd, connectfd,
+	int socketfd; 
+	int connectfd;
 	char buff[1024];
 	
 	struct sockaddr_in server, client;
@@ -35,7 +40,8 @@ int main(int argc, char * argv[]){
 	memset(&server,0,sizeof(server));
 
 	if( argc < 2 ){
-		printf("Usage: ./ser <port number>\n");
+		printf("Usage: ./srv <port number>\n");
+		printf("Eg: ./srv 5000\n");
 		exit(0);
 	}
 
@@ -66,7 +72,7 @@ int main(int argc, char * argv[]){
 
 // 3. Listen syatem call
 
-	ret = listen();
+	ret = listen(socketfd, 5);
 	if(ret == -1){
 		perror("listen");
 		exit(-1);
@@ -76,17 +82,29 @@ int main(int argc, char * argv[]){
 
 // 4. Bind system call
 
-	ret = accept();
+	printf("Waiting for a client request ... \n");
+
+	socklen_t len = sizeof(server);
+	ret = accept(socketfd,( struct sockaddr *)&server,&len);
 	if(ret == -1){
 		perror("accept");
 		exit(-1);
 	} else {
+		connectfd = ret;
 		printf("Success on accept system call\n");
 	}
 
+
 // 5. Send/Recv System call
 
-	ret = send();
+	strcpy(buff,"Hi client, Welcome to server");
+	printf("Buffer content:\t%s\n",buff);
+
+
+	/* Be carefull: Here connectfd is file discriptor which is returned by
+					accept system call not by the connect system call. */
+
+	ret = send(connectfd, buff, sizeof(buff), 0);
 	if( ret == -1 ){
 		perror("send");
 		exit(-1);
