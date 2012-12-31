@@ -14,7 +14,8 @@
 				3. Listen()
 				4. Accept()
 				5. Send/Recv() // Any system call which can be used for 
-				                  reading or writing on a file.eg: read, write, fput, fget
+				                  reading or writing on a file.eg: read, write, 
+								  fput, fget
 				6. Close()
 */
 
