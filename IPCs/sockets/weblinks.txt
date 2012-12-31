@@ -7,5 +7,10 @@ Link 2:
 	http://alas.matf.bg.ac.rs/manuals/lspe/mode=1.html
 
 
+Link 3: bind Error: Address already in use
+===========================================
+	http://hea-www.harvard.edu/~fine/Tech/addrinuse.html
+	
+
 
 
