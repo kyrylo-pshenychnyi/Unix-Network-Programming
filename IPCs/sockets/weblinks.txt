@@ -1,2 +1,11 @@
-This files contains good internet links to learn Sockets details
+Link 1:
+======================
+	ftp://ftp.sas.com/techsup/download/SASC/share5958-59/S5958v2.pdf
+
+Link 2:
+======================
+	http://alas.matf.bg.ac.rs/manuals/lspe/mode=1.html
+
+
+
 
