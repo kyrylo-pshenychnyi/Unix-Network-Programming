@@ -3,12 +3,8 @@
 	Brief		: Show IP addresses for a host given on the command line
 	Date		: 1st Jan 2013
 	Author		: Prakash Ranjan
+	Link		: http://beej.us/guide/bgnet/output/html/singlepage/bgnet.html
 	
-*/
-
-/*
-	TODO: Program is  getting segmentation fault at line 61 or 66 
-		  when entering unknown hostname.
 */
 
 #include <stdio.h>
@@ -40,7 +36,7 @@ int main(int argc, char *argv[])
 
 
 	ret = getaddrinfo(argv[1], NULL, &hints, &res);
-	if(ret == -1){
+	if(ret != 0){
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
         return 2;
     }
@@ -68,9 +64,6 @@ int main(int argc, char *argv[])
 
         inet_ntop(p->ai_family, addr, ipstr, sizeof(ipstr));
         printf("  %s: %s\n", ipver, ipstr);
-		if(p->ai_next == NULL){
-			break;
-		}
     }
 
     freeaddrinfo(res); // free the linked list
