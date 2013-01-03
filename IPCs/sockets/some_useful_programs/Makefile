@@ -1,6 +1,4 @@
-all:
-	gcc showip.c -o showip -g
-
+all: showip
 
 showip:
 	gcc showip.c -o showip -g
