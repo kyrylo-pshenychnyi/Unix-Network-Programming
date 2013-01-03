@@ -1,6 +1,4 @@
-all:
-	gcc server.c -o srv
-	gcc client.c -o cli
+all: srv cli
 
 srv: 
 	gcc server.c -o srv
