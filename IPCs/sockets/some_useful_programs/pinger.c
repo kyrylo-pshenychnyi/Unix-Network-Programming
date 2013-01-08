@@ -44,10 +44,10 @@ int main(int argc, char* argv[])
      
     if (getuid() != 0)
     {
-    fprintf(stderr, "%s: root privelidges needed\n", *(argv + 0));
-    exit(EXIT_FAILURE);
+    	fprintf(stderr, "%s: root privelidges needed\n", *(argv + 0));
+    	exit(EXIT_FAILURE);
     }
-parse_argvs(argv, dst_addr, src_addr);
+	parse_argvs(argv, dst_addr, src_addr);
     printf("Source address: %s\n", src_addr);
     printf("Destination address: %s\n", dst_addr);
      
@@ -140,46 +140,38 @@ void parse_argvs(char** argv, char* dst, char* src)
     int i;
     if(!(*(argv + 1)))
     {
-    /* there are no options on the command line */
-    usage();
-    exit(EXIT_FAILURE);
+    	/* there are no options on the command line */
+    	usage();
+    	exit(EXIT_FAILURE);
     }
     if (*(argv + 1) && (!(*(argv + 2))))
     {
-    /*
-     *   only one argument provided
-     *   assume it is the destination server
-     *   source address is local host
-     */
-    strncpy(dst, *(argv + 1), 15);
-    strncpy(src, getip(), 15);
-    return;
-    }
-    else if ((*(argv + 1) && (*(argv + 2))))
-    {
-    /*
-     *    both the destination and source address are defined
-     *    for now only implemented is a source address and
-     *    destination address
-     */
-    strncpy(dst, *(argv + 1), 15);
-    i = 2;
-    while(*(argv + i + 1))
-    {
-        if (strncmp(*(argv + i), "-s", 2) == 0)
-        {
-        strncpy(src, *(argv + i + 1), 15);
-        break;
-        }
-        i++;
-    }
- 
+		/*
+		 *   only one argument provided
+		 *   assume it is the destination server
+		 *   source address is local host
+		 */
+		strncpy(dst, *(argv + 1), 15);
+		strncpy(src, getip(), 15);
+		return;
+    } else if ((*(argv + 1) && (*(argv + 2)))){
+		/*
+		 *    both the destination and source address are defined
+		 *    for now only implemented is a source address and
+		 *    destination address
+		 */
+		strncpy(dst, *(argv + 1), 15);
+		i = 2;
+    	while(*(argv + i + 1)){
+        	if (strncmp(*(argv + i), "-s", 2) == 0){
+        		strncpy(src, *(argv + i + 1), 15);
+        		break;
+        	}
+        	i++;
+    	}
     }
 }
  
-
-
-
 
 void usage()
 {
@@ -199,6 +191,7 @@ char* getip()
     return inet_ntoa(*(struct in_addr *)h->h_addr);
      
 }
+
 /*
  * in_cksum --
  * Checksum routine for Internet Protocol
