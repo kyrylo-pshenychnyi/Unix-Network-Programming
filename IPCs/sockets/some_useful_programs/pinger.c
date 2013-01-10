@@ -42,8 +42,7 @@ int main(int argc, char* argv[])
     int optval;
     int addrlen;
      
-    if (getuid() != 0)
-    {
+    if (getuid() != 0){
     	fprintf(stderr, "%s: root privelidges needed\n", *(argv + 0));
     	exit(EXIT_FAILURE);
     }
@@ -78,10 +77,9 @@ int main(int argc, char* argv[])
     ip->daddr            = inet_addr(dst_addr);
  
      
-    if ((sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) == -1)
-    {
-    perror("socket");
-    exit(EXIT_FAILURE);
+    if ((sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) == -1){
+    	perror("socket");
+    	exit(EXIT_FAILURE);
     }
      
     /*
@@ -111,23 +109,22 @@ int main(int argc, char* argv[])
      *  now the packet is sent
      */
      
-    sendto(sockfd, packet, ip->tot_len, 0, (struct sockaddr *)&connection, sizeof(struct sockaddr));
+    sendto(sockfd, packet, ip->tot_len, 0, 
+		   (struct sockaddr *)&connection, sizeof(struct sockaddr));
     printf("Sent %d byte packet to %s\n", sizeof(packet), dst_addr);
      
     /*
      *  now we listen for responses
      */
     addrlen = sizeof(connection);
-    if (recvfrom(sockfd, buffer, sizeof(struct iphdr) + sizeof(struct icmphdr), 0, (struct sockaddr *)&connection, &addrlen) == -1)
-    {
-    perror("recv");
-    }
-    else
-    {
-    printf("Received %d byte reply from %s:\n", sizeof(buffer), dst_addr);
+    if (recvfrom(sockfd, buffer, sizeof(struct iphdr) + 
+		sizeof(struct icmphdr), 0, (struct sockaddr *)&connection, &addrlen) == -1){
+    	perror("recv");
+    } else {
+    	printf("Received %d byte reply from %s:\n", sizeof(buffer), dst_addr);
         ip_reply = (struct iphdr*) buffer;
-    printf("ID: %d\n", ntohs(ip_reply->id));
-    printf("TTL: %d\n", ip_reply->ttl);
+    	printf("ID: %d\n", ntohs(ip_reply->id));
+    	printf("TTL: %d\n", ip_reply->ttl);
     }
     close(sockfd);
     return 0;
@@ -138,14 +135,12 @@ int main(int argc, char* argv[])
 void parse_argvs(char** argv, char* dst, char* src)
 {
     int i;
-    if(!(*(argv + 1)))
-    {
+    if(!(*(argv + 1))){
     	/* there are no options on the command line */
     	usage();
     	exit(EXIT_FAILURE);
     }
-    if (*(argv + 1) && (!(*(argv + 2))))
-    {
+    if (*(argv + 1) && (!(*(argv + 2)))){
 		/*
 		 *   only one argument provided
 		 *   assume it is the destination server
@@ -208,14 +203,12 @@ unsigned short in_cksum(unsigned short *addr, int len)
      * sequential 16 bit words to it, and at the end, fold back all the
      * carry bits from the top 16 bits into the lower 16 bits.
      */
-    while (nleft > 1)
-    {
+    while (nleft > 1){
       sum += *w++;
       nleft -= 2;
     }
     /* mop up an odd byte, if necessary */
-    if (nleft == 1)
-    {
+    if (nleft == 1){
       *(u_char *) (&answer) = *(u_char *) w;
       sum += answer;
     }
