@@ -13,7 +13,7 @@
 #include <sys/msg.h>
 
 
-#define MAX_DATA 64*1024
+#define MAX_DATA 64 * 1024 
 #define MAX_NMESG 4096
 #define MAX_NIDS  4096
 
@@ -32,7 +32,6 @@ int main(int argc , char**argv){
 	int msqid;
 	int qid[MAX_NIDS];
 
-	//msqid = msgget(IPC_PRIVATE,SVMSG_MODE|IPC_CREAT);
 	msqid = msgget(IPC_PRIVATE,0775|IPC_CREAT);
 	if(msqid == -1){
 		printf("Error in getting message queue id \n");
@@ -41,30 +40,26 @@ int main(int argc , char**argv){
 		printf("Success in getting message queue id => %d \n",msqid);
 	}
 	mesg.type = 1;
-	//ret = msgsnd(msqid, &mesg, 1, 0);
 	
 	for (i = 0; ; i++){
-		ret = msgsnd(msqid, &mesg, 1, IPC_NOWAIT);
+		ret = msgsnd(msqid, &mesg, 1 , IPC_NOWAIT);
 		if(ret == -1 ){
-			printf("Error in sending message on message queue => %d\n",msqid);
+			printf("Error in sending message number  => %d\n",i);
 			break;
 		} else {
-			printf("Maximum amount of data per message = %d\n", i);
+			printf("Message number = %d\n", i);
 			max_mesg = i;
 		}
 	}
-	
-	if (i == 0){
-		printf("Error quit message\n");
-	}	
-			
-/*	ret = msgctl(msqid,IPC_RMID,NULL);
+	printf("Maximum number of bytes on a message queue %d\n", (i - 1 ));
+		
+	ret = msgctl(msqid,IPC_RMID,NULL);
 	if(ret == -1){
 		printf("Error in removing message queue id \n");
 		exit(1);
 	} else {
 		printf("Success in removing message queue id => %d \n",msqid);
 	}
-*/
+
 	return 0;
 }
