@@ -27,17 +27,17 @@
 
  */
  
- #include <stdio.h>
- #include <sys/types.h>
- #include <sys/ipc.h>
- #include <sys/sem.h>
- #include <stdlib.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
+#include <stdlib.h>
  
- union semun {
-               int val;
-               struct semid_ds *buf;
-               ushort *array;
-          };
+union semun {
+    int val;
+    struct semid_ds *buf;
+    ushort *array;
+};
 
 int main(void){
     int i,j; 
