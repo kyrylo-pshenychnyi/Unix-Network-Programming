@@ -48,30 +48,33 @@ int main(void){
     int nsems = 1; /* nsems to pass to semget() */
     int nsops; /* number of operations to do */
     struct sembuf *sops = (struct sembuf *) malloc(2*sizeof(struct sembuf)); 
+    int ret_val;
     /* ptr to operations to perform */
 
     /* set up semaphore */
   
-    printf("\nsemget: Setting up seamaphore: semget(%#lx, %%#o)\n",key, nsems, semflg);
-    if ((semid = semget(key, nsems, semflg)) == -1) {
+    printf("\nsemget: Setting up seamaphore: semget(%d, %d, %d)\n",key, nsems, semflg);
+
+    semid = semget(key, nsems, semflg);
+    if (semid == -1) {
         perror("semget: semget failed");
         exit(1);
     } else {
-        (void) fprintf(stderr, "semget: semget succeeded: semid =%d\n", semid);
+        printf("semget: semget succeeded: semid =%d\n", semid);
     }
 
     /* get child process */
+    
+    pid = fork(); 
   
-    if ((pid = fork()) < 0) {
+    if (pid < 0) {
         perror("fork");
         exit(1);
-    }
-    
-    if (pid == 0){ /* child */
+    } else if (pid == 0){ /* child */
         i = 0;
-        while (i  < 3) {/* allow for 3 semaphore sets */
+        while (i < 2) {/* allow for 2 semaphore sets */
                
-           nsops = 2;
+           nsops = 2; // Number of semaphore operation
            
            /* wait for semaphore to reach zero */
            
@@ -83,23 +86,13 @@ int main(void){
            sops[1].sem_num = 0;
            sops[1].sem_op = 1; /* increment semaphore -- take control of track */
            sops[1].sem_flg = SEM_UNDO | IPC_NOWAIT; /* take off semaphore */
-           
-           /* Recap the call to be made. */
-           
-           (void) fprintf(stderr,"\nsemop:Child  Calling semop(%d, &sops, %d) with:", semid, nsops);
-           for (j = 0; j < nsops; j++){
-               (void) fprintf(stderr, "\n\tsops[%d].sem_num = %d, ", j, sops[j].sem_num);
-               (void) fprintf(stderr, "sem_op = %d, ", sops[j].sem_op);
-               (void) fprintf(stderr, "sem_flg = %#o\n", sops[j].sem_flg);
-           }
-           
+  
            /* Make the semop() call and report the results. */
-           if ((j = semop(semid, sops, nsops)) == -1) {
+            ret_val = semop(semid, sops, nsops); 
+           if (ret_val == -1) {
                perror("semop: semop failed");
            } else {
-               (void) fprintf(stderr, "\tsemop: semop returned %d\n", j);
-           
-               (void) fprintf(stderr, "\n\nChild Process Taking Control of Track: %d/3 times\n", i+1);
+               printf("\n\n\tChild Process Taking Control of Track: %d/2 times\n", i+1);
                sleep(5); /* DO Nothing for 5 seconds */
 
                nsops = 1;
@@ -109,11 +102,11 @@ int main(void){
                sops[0].sem_op = -1; /* Give UP COntrol of track */
                sops[0].sem_flg = SEM_UNDO | IPC_NOWAIT; /* take off semaphore, asynchronous  */
            
-                   
-               if ((j = semop(semid, sops, nsops)) == -1) {
-                   perror("semop: semop failed");
+               ret_val = semop(semid, sops, nsops);    
+               if (ret_val == -1) {
+                    perror("\tsemop: semop failed");
                } else {
-                 (void) fprintf(stderr, "Child Process Giving up Control of Track: %d/3 times\n", i+1);
+                    printf("\tChild Process Giving up Control of Track: %d/2 times\n", i+1);
                }
                sleep(5); /* halt process to allow parent to catch semaphor change first */
            }
@@ -124,10 +117,10 @@ int main(void){
         
         i = 0;
        
+        sleep(1); 
+        while (i  < 2) { /* allow for 2 semaphore sets */
        
-        while (i  < 3) { /* allow for 3 semaphore sets */
-       
-            nsops = 2;
+            nsops = 2; //semaphore operation
        
             /* wait for semaphore to reach zero */
             sops[0].sem_num = 0;
@@ -139,22 +132,12 @@ int main(void){
             sops[1].sem_op = 1; /* increment semaphore -- take control of track */
             sops[1].sem_flg = SEM_UNDO | IPC_NOWAIT; /* take off semaphore */
        
-            /* Recap the call to be made. */
-       
-            (void) fprintf(stderr,"\nsemop:Parent Calling semop(%d, &sops, %d) with:", semid, nsops);
-            for (j = 0; j < nsops; j++) {
-                (void) fprintf(stderr, "\n\tsops[%d].sem_num = %d, ", j, sops[j].sem_num);
-                (void) fprintf(stderr, "sem_op = %d, ", sops[j].sem_op);
-                (void) fprintf(stderr, "sem_flg = %#o\n", sops[j].sem_flg);
-            }
-    
             /* Make the semop() call and report the results. */
-            if ((j = semop(semid, sops, nsops)) == -1) {
+            ret_val = semop(semid, sops, nsops);
+            if ( ret_val == -1) {
                 perror("semop: semop failed");
             } else {
-                (void) fprintf(stderr, "semop: semop returned %d\n", j);
-    
-                (void) fprintf(stderr, "Parent Process Taking Control of Track: %d/3 times\n", i+1);
+                printf("Parent Process Taking Control of Track: %d/2 times\n", i+1);
                 sleep(5); /* Do nothing for 5 seconds */
 
                 nsops = 1;
@@ -164,10 +147,11 @@ int main(void){
                 sops[0].sem_op = -1; /* Give UP COntrol of track */
                 sops[0].sem_flg = SEM_UNDO | IPC_NOWAIT; /* take off semaphore, asynchronous  */
        
-                if ((j = semop(semid, sops, nsops)) == -1) {
+                ret_val = semop(semid, sops, nsops);
+                if (ret_val == -1) {
                     perror("semop: semop failed");
                 } else {
-                    (void) fprintf(stderr, "Parent Process Giving up Control of Track: %d/3 times\n", i+1);
+                    printf("Parent Process Giving up Control of Track: %d/2 times\n", i+1);
                 }
                 sleep(5); /* halt process to allow child to catch semaphor change first */
             }
