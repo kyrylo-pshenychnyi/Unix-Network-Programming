@@ -5,15 +5,22 @@
 
 /* 
 	For reference:
-		struct hostent {
-        char    *h_name;        // official name of host 
-        char    **h_aliases;    // alias list 
-        int     h_addrtype;     // host address type 
-        int     h_length;       // length of address 
-        char    **h_addr_list;  // list of addresses 
-	}
-	#define h_addr  h_addr_list[0]  // for backward compatibility 
-
+=============================================================================	
+=		struct hostent {													=
+=        char    *h_name;        // official name of host 					=
+=        char    **h_aliases;    // alias list 								=
+=        int     h_addrtype;     // host address type 						=
+=        int     h_length;       // length of address 						=
+=        char    **h_addr_list;  // list of addresses 						=
+=		}																	=
+=	#define h_addr  h_addr_list[0]  // for backward compatibility 			=
+=============================================================================	
+=	struct in_addr {														=
+=        unsigned long int s_addr;											=
+=	}																		=
+=	Note that on the i80x86 the host byte order is Little Endian, 			=
+=	whereas the network byte order, as used on the Internet, is Big Endian. = 
+=============================================================================
 */
 
 
