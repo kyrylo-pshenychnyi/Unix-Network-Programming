@@ -48,7 +48,8 @@ int main(int argc, char * argv[]){
 		exit(1);
 	} else {
 		h_addr.s_addr = *((unsigned long *) host->h_addr_list[0]);
-		printf("\n%s -> IP address  	%s\n",argv[1],inet_ntoa(h_addr));
+		printf("\n%s -> IP address  	%s\n",argv[1],inet_ntoa(h_addr)); /* Internet address 
+																		     Network to ascii (ntoa)*/
 		printf("%s -> Length      	%d\n",argv[1],host->h_length);
 		printf("%s -> Address type	%d\n",argv[1],host->h_addrtype);
 		printf("%s -> Name     		%s\n\n",argv[1],host->h_name);
