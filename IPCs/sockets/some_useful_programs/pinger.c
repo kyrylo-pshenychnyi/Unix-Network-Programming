@@ -1,12 +1,39 @@
 /*
-	Link : http://cboard.cprogramming.com/networking-device-communication/107801-linux-raw-socket-programming.html
+    Link : http://cboard.cprogramming.com/networking-device-communication/107801-linux-raw-socket-programming.html
 
-	Usage: ./pinger 192.168.1.254
-	./pinger 192.168.1.254 -s 192.168.1.64
+    Usage: ./pinger 192.168.1.254
+    ./pinger 192.168.1.254 -s 192.168.1.64
 
 
-	Topic: Linux raw socket programming
+    Topic: Linux raw socket programming
 
+
+Reference:
+========================
+1. Reference 0f struct iphdr
+	http://kerneldox.com/kdox-linux-2.6/dd/da5/structiphdr.html
+    
+    struct iphdr {
+        if defined(__LITTLE_ENDIAN_BITFIELD)
+             __u8    ihl:4,
+             version:4;
+        elif defined (__BIG_ENDIAN_BITFIELD)
+             __u8    version:4,
+             ihl:4;
+        #else
+            error  "Please fix <asm/byteorder.h>"
+        endif
+            __u8    tos;
+            __u16   tot_len;
+            __u16   id;
+            __u16   frag_off;
+            __u8    ttl;
+            __u8    protocol;
+            __u16   check;
+            __u32   saddr;
+            __u32   daddr;
+         //The options start here. 
+    };
 */
 
 #include <stdio.h>
@@ -43,10 +70,10 @@ int main(int argc, char* argv[])
     int addrlen;
      
     if (getuid() != 0){
-    	fprintf(stderr, "%s: root privelidges needed\n", *(argv + 0));
-    	exit(EXIT_FAILURE);
+        fprintf(stderr, "%s: root privelidges needed\n", *(argv + 0));
+        exit(EXIT_FAILURE);
     }
-	parse_argvs(argv, dst_addr, src_addr);
+    parse_argvs(argv, dst_addr, src_addr);
     printf("Source address: %s\n", src_addr);
     printf("Destination address: %s\n", dst_addr);
      
@@ -67,19 +94,19 @@ int main(int argc, char* argv[])
      *  here the ip packet is set up except checksum
      */
     ip->ihl          = 5;
-    ip->version          = 4;
+    ip->version      = 4;
     ip->tos          = 0;
-    ip->tot_len          = sizeof(struct iphdr) + sizeof(struct icmphdr);
+    ip->tot_len      = sizeof(struct iphdr) + sizeof(struct icmphdr);
     ip->id           = htons(random());
     ip->ttl          = 255;
     ip->protocol     = IPPROTO_ICMP;
-    ip->saddr            = inet_addr(src_addr);
-    ip->daddr            = inet_addr(dst_addr);
+    ip->saddr        = inet_addr(src_addr);
+    ip->daddr        = inet_addr(dst_addr);
  
      
     if ((sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) == -1){
-    	perror("socket");
-    	exit(EXIT_FAILURE);
+        perror("socket");
+        exit(EXIT_FAILURE);
     }
      
     /*
@@ -109,22 +136,20 @@ int main(int argc, char* argv[])
      *  now the packet is sent
      */
      
-    sendto(sockfd, packet, ip->tot_len, 0, 
-		   (struct sockaddr *)&connection, sizeof(struct sockaddr));
-    printf("Sent %d byte packet to %s\n", sizeof(packet), dst_addr);
+    sendto(sockfd, packet, ip->tot_len, 0, (struct sockaddr *)&connection, sizeof(struct sockaddr));
+    printf("Sent %lu byte packet to %s\n", sizeof(packet), dst_addr);
      
     /*
      *  now we listen for responses
      */
     addrlen = sizeof(connection);
-    if (recvfrom(sockfd, buffer, sizeof(struct iphdr) + 
-		sizeof(struct icmphdr), 0, (struct sockaddr *)&connection, &addrlen) == -1){
-    	perror("recv");
+    if (recvfrom(sockfd, buffer, sizeof(struct iphdr) + sizeof(struct icmphdr), 0, (struct sockaddr *)&connection, &addrlen) == -1){
+        perror("recv");
     } else {
-    	printf("Received %d byte reply from %s:\n", sizeof(buffer), dst_addr);
+        printf("Received %lu byte reply from %s:\n", sizeof(buffer), dst_addr);
         ip_reply = (struct iphdr*) buffer;
-    	printf("ID: %d\n", ntohs(ip_reply->id));
-    	printf("TTL: %d\n", ip_reply->ttl);
+        printf("ID: %d\n", ntohs(ip_reply->id));
+        printf("TTL: %d\n", ip_reply->ttl);
     }
     close(sockfd);
     return 0;
@@ -136,34 +161,34 @@ void parse_argvs(char** argv, char* dst, char* src)
 {
     int i;
     if(!(*(argv + 1))){
-    	/* there are no options on the command line */
-    	usage();
-    	exit(EXIT_FAILURE);
+        /* there are no options on the command line */
+        usage();
+        exit(EXIT_FAILURE);
     }
     if (*(argv + 1) && (!(*(argv + 2)))){
-		/*
-		 *   only one argument provided
-		 *   assume it is the destination server
-		 *   source address is local host
-		 */
-		strncpy(dst, *(argv + 1), 15);
-		strncpy(src, getip(), 15);
-		return;
+        /*
+         *   only one argument provided
+         *   assume it is the destination server
+         *   source address is local host
+         */
+        strncpy(dst, *(argv + 1), 15);
+        strncpy(src, getip(), 15);
+        return;
     } else if ((*(argv + 1) && (*(argv + 2)))){
-		/*
-		 *    both the destination and source address are defined
-		 *    for now only implemented is a source address and
-		 *    destination address
-		 */
-		strncpy(dst, *(argv + 1), 15);
-		i = 2;
-    	while(*(argv + i + 1)){
-        	if (strncmp(*(argv + i), "-s", 2) == 0){
-        		strncpy(src, *(argv + i + 1), 15);
-        		break;
-        	}
-        	i++;
-    	}
+        /*
+         *    both the destination and source address are defined
+         *    for now only implemented is a source address and
+         *    destination address
+         */
+        strncpy(dst, *(argv + 1), 15);
+        i = 2;
+        while(*(argv + i + 1)){
+            if (strncmp(*(argv + i), "-s", 2) == 0){
+                strncpy(src, *(argv + i + 1), 15);
+                break;
+            }
+            i++;
+        }
     }
 }
  
