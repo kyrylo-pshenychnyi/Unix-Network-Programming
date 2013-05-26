@@ -1,12 +1,13 @@
-/* program to get the ip address of a host by its name */
+/* 	Program to get the ip address of a host by its name.
+  	The same functionality can be get by using nslookup
+	utility from command line. This is done usin programming
+*/
 
 #include<stdio.h>
 #include<stdlib.h>
 #include<netdb.h>
 #include<arpa/inet.h>
 #include<netinet/in.h>
-
-
 
 int main(int argc, char * argv[]){
 	printf("\nProgram to show the usage of gethostbyname() C function\n");
