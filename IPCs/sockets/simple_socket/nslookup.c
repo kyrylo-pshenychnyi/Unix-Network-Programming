@@ -25,8 +25,8 @@
 int main(int argc, char * argv[]){
 	printf("\nProgram to show the usage of gethostbyname() C function\n");
 	printf("=======================================================\n");
-	struct hostent *host;
-	struct in_addr h_addr;
+	struct hostent *host;  // host entity
+	struct in_addr h_addr; // Internet address
 	int ret ;
 	
 	if(argc < 2){
