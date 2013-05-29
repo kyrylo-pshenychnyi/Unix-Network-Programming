@@ -1,0 +1,43 @@
+Functions and structures related to scoket
+============================================
+
+Server:
+=======
+            Socket((AF_INET, SOCK_STREAM, IPPROTO_TCP)
+              |
+              V
+            bind(socketfd, (struct sockaddr *)&server, sizeof(struct sockaddr))
+              |
+              V
+            listen(socketfd, 5)
+              |
+              V
+            accept(socketfd,( struct sockaddr *)&server,&len)
+              |
+              V
+            send(connectfd, buff, sizeof(buff), 0);
+              or
+            recv(sockfd, buff,sizeof(buff),0);
+              |
+              V
+            close(socketfd);  
+
+
+Client:
+=======
+            socket(AF_INET, SOCK_STREAM,0);
+              |
+              V
+            connect(sockfd, (struct sockaddr *)&server, len);
+              |
+              V
+            recv(sockfd, buff,sizeof(buff),0);
+              or
+            send(connectfd, buff, sizeof(buff), 0);
+              |
+              V
+            close(sockfd);
+
+
+===============================================================================
+
