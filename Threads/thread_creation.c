@@ -1,3 +1,5 @@
+/* Program to show the thread creation in C */
+
 #include<stdio.h>
 #include<pthread.h>
 #include<string.h>
