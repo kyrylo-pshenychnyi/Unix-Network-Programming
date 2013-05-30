@@ -18,3 +18,6 @@ Link 4:
 =======================================
 http://beej.us/guide/bgnet/output/html/singlepage/bgnet.html
 
+Link 5: All for socket programming
+=========================================
+http://www.tenouk.com/cnlinuxsockettutorials.html
