@@ -120,14 +120,14 @@ int main(int argc, char* argv[])
      *  here the icmp packet is created
      *  also the ip checksum is generated
      */
-    icmp->type           = ICMP_ECHO;
-    icmp->code           = 0;
-    icmp->un.echo.id     = 0;
-    icmp->un.echo.sequence   = 0;
-    icmp->checksum       = 0;
-    icmp-> checksum      = in_cksum((unsigned short *)icmp, sizeof(struct icmphdr));
-     
-    ip->check            = in_cksum((unsigned short *)ip, sizeof(struct iphdr));
+    icmp->type              = ICMP_ECHO;
+    icmp->code              = 0;
+    icmp->un.echo.id        = 0;
+    icmp->un.echo.sequence  = 0;
+    icmp->checksum          = 0;
+    icmp-> checksum         = in_cksum((unsigned short *)icmp, sizeof(struct icmphdr));
+    
+    ip->check               = in_cksum((unsigned short *)ip, sizeof(struct iphdr));
      
     connection.sin_family = AF_INET;
     connection.sin_addr.s_addr = inet_addr(dst_addr);
