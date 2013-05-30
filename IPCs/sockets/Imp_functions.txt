@@ -123,9 +123,37 @@ structures and other functions used in socket programming
          /*The options start here. */
  };
 
-=================
-3.
-================
+=============================================================================
+3. Conversion of different types of number notation in network programming.
+=============================================================================
+    uint32_t htonl(uint32_t hostlong);
+    uint16_t htons(uint16_t hostshort);
+    uint32_t ntohl(uint32_t netlong);
+    uint16_t ntohs(uint16_t netshort);
+
+    To manupulate IP address.
+    1. int inet_aton(const char *cp, struct in_addr *inp); /* Assci to network */
+       Sample usage:
+            struct sockaddr_in my_addr;    /* host byte order */
+            my_addr.sin_family = AF_INET;  /* short, network byte order */
+            my_addr.sin_port = htons(MYPORT);
+            inet_aton("10.12.110.57", &(my_addr.sin_addr));
+            /* zero the rest of the struct */
+            memset(&(my_addr.sin_zero), 0, 8);
+
+
+    2. in_addr_t inet_addr(const char *cp);
+        Sample usage:
+            struct sockaddr_in  my_addr;
+            my_addr.sin_addr.s_addr = inet_addr("192.168.42.1");
+        NOTE: No error checking mechanism is available in inet_addr function.
+        So usage of inet_aton() function is more appropiate.
+
+    3. char *inet_ntoa(struct in_addr in); /* Network to assci */
+        Sample usage:
+            printf("%s", inet_ntoa(ina.sin_addr));
+        
+=============================================================================
 
 
 
