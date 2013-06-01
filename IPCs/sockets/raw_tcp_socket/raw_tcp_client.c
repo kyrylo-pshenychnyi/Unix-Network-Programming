@@ -100,8 +100,16 @@ int main(int argc, char *argv[]){
     
     ip = (struct iphdr*)packet;
     tcp = (struct tcp *)(packet + sizeof(struct iphdr)); 
-
     
+    ip->ihl                 = 5;
+    ip->version             = 4;
+    ip->tos                 = 0;
+    ip->tot_len             = sizeof(struct iphdr) + sizeof(struct tcphdr);
+    ip->id                  = 100;
+    ip->ttl                 = 255;
+    ip->protocol            = IPPROTO_TCP;
+    ip->saddr               = inet_addr(src_addr);
+    ip->daddr               = inet_addr(dst_addr); 
 
 
 
