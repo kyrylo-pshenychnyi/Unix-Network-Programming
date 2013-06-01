@@ -1,3 +1,33 @@
 Link:
 ==============
 simplestcodings.blogspot.in/2010/10/tcp-header-format.html
+============================================================
+
+TCP header format
+TCP segments are sent as internet datagrams. The Internet Protocol header 
+carries several information fields, including the source and destination 
+host addresses. A TCP header follows the internet header, supplying 
+information specific to the TCP protocol. This division allows for the 
+existence of host level protocols other  than TCP.
+
+TCP Header Format
+=============================
+
+
+        0 1 2 3 4 5 6 7 0   1 2 3 4 5 6 7 0   1 2 3 4 5 6 7 0   1 2 3 4 5 6 7
+        ----------------------------------------------------------------------
+        |     Source port                   |   Destination port             |
+        ----------------------------------------------------------------------
+        |                              Sequence Number                       |
+        ----------------------------------------------------------------------
+        |       |              |U|A|P|R|S|F |                                |
+        |Data   |  Reserved    |U|A|P|R|S|F |       Window                   |                    
+        |Offset |              |U|A|P|R|S|F |                                |
+        ----------------------------------------------------------------------
+        |              Checksum             |        urgent pointer          |
+        ----------------------------------------------------------------------
+        |              Options                                | Padding      |   
+        ----------------------------------------------------------------------
+        |                              Data                                  |
+        ----------------------------------------------------------------------
+
