@@ -1,5 +1,72 @@
 /* Prgram which will generate raw tcp packets and send over 
 the network */
+
+#if 0
+From /usr/include/linux/tcp.h
+==============================
+
+struct tcphdr {
+    __be16  source;
+    __be16  dest;
+    __be32  seq;
+    __be32  ack_seq;
+#if defined(__LITTLE_ENDIAN_BITFIELD)
+    __u16   res1:4,
+        doff:4,
+        fin:1,
+        syn:1,
+        rst:1,
+        psh:1,
+        ack:1,
+        urg:1,
+        ece:1,
+        cwr:1;
+#elif defined(__BIG_ENDIAN_BITFIELD)
+    __u16   doff:4,
+        res1:4,
+        cwr:1,
+        ece:1,
+        urg:1,
+        ack:1,
+        psh:1,
+        rst:1,
+        syn:1,
+        fin:1;
+#else
+#error  "Adjust your <asm/byteorder.h> defines"
+#endif
+    __be16  window;
+    __sum16 check;
+    __be16  urg_ptr;
+};
+
+
+From /usr/include/linux/ip.h
+==============================
+
+struct iphdr {
+#if defined(__LITTLE_ENDIAN_BITFIELD)
+    __u8    ihl:4,
+        version:4;
+#elif defined (__BIG_ENDIAN_BITFIELD)
+    __u8    version:4,
+        ihl:4;
+#else
+#error  "Please fix <asm/byteorder.h>"
+#endif
+    __u8    tos;
+    __be16  tot_len;
+    __be16  id;
+    __be16  frag_off;
+    __u8    ttl;
+    __u8    protocol;
+    __sum16 check;
+    __be32  saddr;
+    __be32  daddr;
+    /*The options start here. */
+};
+#endif
+
 #include<stdio.h>
 #include<sys/types.h>
 #include<netdb.h>
@@ -115,6 +182,7 @@ int main(int argc, char *argv[]){
     
     /* Allocating all the necessary memory allocation */
 
+
     ip = (struct iphdr *) malloc(sizeof( struct iphdr)); 
     tcp = (struct tcphdr *)malloc(sizeof(struct tcphdr));
     packet = (char*)malloc(sizeof(struct iphdr) + sizeof(struct tcphdr));
@@ -137,15 +205,22 @@ int main(int argc, char *argv[]){
 
 
     /* Filling TCP structure */
-    tcp->source             = htons(atoi(argv[4]));
-    tcp->dest               = htons(atoi(argv[5]));
+    if(strncmp(argv[3],"-s",2) == 0){
+        tcp->source             = htons(atoi(argv[4]));
+    } else {
+        tcp->source             = htons(1234);
+    }
+    
+    if(strncmp(argv[5],"-d",2) == 0){
+        tcp->dest               = htons(atoi(argv[6])); // creating segmentation fault
+    }else {
+        tcp->dest               = htons(1234); // creating segmentation fault
+    }
     tcp->seq                = htons(1);
     tcp->ack_seq            = 0;
     tcp->window             = htons(32767);
     tcp->check              = in_cksum((unsigned short *)tcp, sizeof(struct tcphdr)); 
     tcp->urg_ptr            = 0;
-
-
     /* create the socket */
     socket_fd = socket(AF_INET, SOCK_RAW, IPPROTO_TCP);
     if(socket_fd == -1){
