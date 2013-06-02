@@ -32,34 +32,41 @@ TCP Header Format
         ----------------------------------------------------------------------
 
 
-==========================================
-//TCP Header structure as per RFC 793
-==========================================
+From /usr/include/linux/tcp.h
+==============================
+
 struct tcphdr {
-    u_short th_sport;  /* source port */
-    u_short th_dport;  /* destination port */
-    tcp_seq th_seq;   /* sequence number */
-    tcp_seq th_ack;   /* acknowledgement number */
-#if BYTE_ORDER == LITTLE_ENDIAN
-    u_int th_x2:4,  /* (unused) */
-    th_off:4;  /* data offset */
+    __be16  source;
+    __be16  dest;
+    __be32  seq;
+    __be32  ack_seq;
+#if defined(__LITTLE_ENDIAN_BITFIELD)
+    __u16   res1:4,
+        doff:4,
+        fin:1,
+        syn:1,
+        rst:1,
+        psh:1,
+        ack:1,
+        urg:1,
+        ece:1,
+        cwr:1;
+#elif defined(__BIG_ENDIAN_BITFIELD)
+    __u16   doff:4,
+        res1:4,
+        cwr:1,
+        ece:1,
+        urg:1,
+        ack:1,
+        psh:1,
+        rst:1,
+        syn:1,
+        fin:1;
+#else
+#error  "Adjust your <asm/byteorder.h> defines"
 #endif
-#if BYTE_ORDER == BIG_ENDIAN
-    u_int th_off:4,  /* data offset */
-    th_x2:4;  /* (unused) */
-#endif
-    u_char th_flags;
-#define TH_FIN 0x01
-#define TH_SYN 0x02
-#define TH_RST 0x04
-#define TH_PUSH 0x08
-#define TH_ACK 0x10
-#define TH_URG 0x20
-#define TH_ECE 0x40
-#define TH_CWR 0x80
-#define TH_FLAGS (TH_FIN|TH_SYN|TH_RST|TH_ACK|TH_URG|TH_ECE|TH_CWR)
-    u_short th_win;   /* window */
-    u_short th_sum;   /* checksum */
-    u_short th_urp;   /* urgent pointer */
+    __be16  window;
+    __sum16 check;
+    __be16  urg_ptr;
 };
 
