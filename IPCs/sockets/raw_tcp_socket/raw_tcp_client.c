@@ -171,7 +171,7 @@ int main(int argc, char *argv[]){
         exit(0);
     }
 
-    if(argc < 5){
+    if(argc < 7){
         usage();
         return 0;
     }
