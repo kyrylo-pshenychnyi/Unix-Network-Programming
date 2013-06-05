@@ -31,7 +31,7 @@
 int main(int argc, char * argv[]){
 	int ret;
 	int sockfd;
-	char buff[1024];
+	char buff[30];
 	struct hostent *host;
 	struct sockaddr_in server, client;
 	
