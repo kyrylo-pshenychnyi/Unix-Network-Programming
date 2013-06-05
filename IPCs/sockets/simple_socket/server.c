@@ -33,7 +33,7 @@ int main(int argc, char * argv[]){
 	int ret;
 	int socketfd; 
 	int connectfd;
-	char buff[1024];
+	char buff[30];
 	
 	struct sockaddr_in server, client;
 	
