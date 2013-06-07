@@ -21,3 +21,8 @@ http://beej.us/guide/bgnet/output/html/singlepage/bgnet.html
 Link 5: All for socket programming
 =========================================
 http://www.tenouk.com/cnlinuxsockettutorials.html
+
+Link6: 5 Pit falls of socket programming
+========================================
+http://www.ibm.com/developerworks/library/l-sockpit/
+
