@@ -98,19 +98,21 @@ int main(int argc, char * argv[]){
 
 // 5. Send/Recv System call
 
-	strcpy(buff,"Hi client, Welcome to server");
+	strcpy(buff,"Hi client, Welcome to server.. ");
 	printf("Buffer content:\t%s\n",buff);
 
 
 	/* Be carefull: Here connectfd is file discriptor which is returned by
 					accept system call not by the connect system call. */
 
+
+    
 	ret = send(connectfd, buff, sizeof(buff), 0);
 	if( ret == -1 ){
 		perror("send");
 		exit(-1);
 	} else {
-		printf("Send buffer data is successfull\n");
+		printf("Send buffer data [%ld Bytes] is successfull\n", strlen(buff));
 	}
 
 // 6. Close system call.
