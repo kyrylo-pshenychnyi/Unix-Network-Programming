@@ -95,7 +95,13 @@ int main(int argc, char * argv[]){
 		printf("Success on accept system call\n");
 	}
 
+    int i = 0;
+    while (i != 5){
+        i++;
+        sleep(3);
+    }
 
+#if 1
 // 5. Send/Recv System call
 
 	strcpy(buff,"Hi client, Welcome to server.. ");
@@ -114,9 +120,13 @@ int main(int argc, char * argv[]){
 	} else {
 		printf("Send buffer data [%ld Bytes] is successfull\n", strlen(buff));
 	}
-
+#endif
 // 6. Close system call.
-
+    i = 0;
+    while (i != 5){
+        i++;
+        sleep(3);
+    }
 	close(socketfd);
 
 	return 0;
