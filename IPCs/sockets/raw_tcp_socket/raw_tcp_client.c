@@ -185,7 +185,7 @@ int main(int argc, char *argv[]){
 
     ip = (struct iphdr *) malloc(sizeof( struct iphdr)); 
     tcp = (struct tcphdr *)malloc(sizeof(struct tcphdr));
-    packet = (char*)malloc(sizeof(struct iphdr) + sizeof(struct tcphdr));
+    packet = (char*)malloc(sizeof(struct iphdr) + sizeof(struct tcphdr) + 10 );
     buffer = (char *)malloc(sizeof(struct iphdr) + sizeof(struct tcphdr));
     
     
@@ -234,6 +234,8 @@ int main(int argc, char *argv[]){
         exit(-1);
     }
 
+
+    strcpy((char *)(packet +sizeof(struct iphdr) + sizeof(struct tcphdr)), "vikash");
     connection.sin_family = AF_INET;
     connection.sin_addr.s_addr = inet_addr(dst_addr);
     sendto(socket_fd,packet, ip->tot_len, 0, (struct sockaddr *)&connection, sizeof(struct sockaddr));
