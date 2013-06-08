@@ -78,6 +78,14 @@ int main(int argc, char * argv[]){
 		printf("Success in connect system call\n");
 	}
 
+    int i = 0;
+    while (i != 5){
+        i++;
+        sleep(3);
+    }
+
+
+#if 1
 // 3. Send/Recv system call
 
 	ret = recv(sockfd, buff,sizeof(buff),0);
@@ -88,9 +96,14 @@ int main(int argc, char * argv[]){
 		printf("Message received from server\n");
 		printf("%s\n",buff);
 	}
-
+#endif
 // 4. Close system call
 
+    i = 0;
+    while (i != 5){
+        i++;
+        sleep(3);
+    }
 	close(sockfd);
 
 	return 0;
