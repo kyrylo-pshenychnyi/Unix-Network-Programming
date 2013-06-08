@@ -1,0 +1,197 @@
+                           How ARP Works
+                         =================
+
+This article is based off of a series of usenet posts (one in particular) 
+on the alt.certification.network-plus news group. I've done some revision 
+in order to make the whole thing flow as a stand-alone document and I've 
+also made some revisions to the example.
+
+What is ARP?
+=============
+
+ARP stands for Address Resolution Protocol. It is used to associate a 
+layer 3 (Network layer) address (such as an IP address) with a layer 2 
+(Data Link layer) address (MAC address).
+
+Layer 2 vs. Layer 3 addressing
+================================
+I think where a lot of confusion with ARP comes from is in regards to 
+how the IP address and the MAC address work together. The IP address is a layer
+3 (network layer) address. The MAC address is a layer 2 (data link) address. 
+The layer 3 address is a logical address. It will pertain to a single protocol 
+(such as IP, IPX, or Appletalk). The layer 2 address is a physical address. It 
+pertains to the actual hardware interface (NIC) in the computer. A computer can 
+have any number of layer 3 addresses but it will only have 1 layer 2 address 
+per LAN interface. At layer 3, the data is addressed to the host that the data 
+is destined for. At layer 2 though, the data is addressed to the next hop. 
+This is handy because you only need to know a host's layer 3 address (which can
+be found out by using DNS for instance) but you won't need to know the hardware 
+address (and you won't have to bog down the network by sending an ARP request 
+across the internet to find it out). The layer 3 packet (addressed to the 
+destination host) will be encapsulated within a layer 2 frame (addressed to the
+next hop).
+
+ARP operation for a local host
+================================
+Your computer will have data that it needs to send (I'm assuming that we're
+using TCP/IP from here on). When the data gets to the Network layer it will 
+put on the destination IP address. All of this info (the network layer datagram, 
+aka packet) is passed down to the data link layer where it is taken and placed 
+within a data link frame. Based on the IP address (and the subnet mask), your 
+computer should be able to figure out if the destination IP is a local IP or not. 
+If the IP is local, your computer will look in it's ARP table (a table where the 
+responses to previous ARP requests are cached) to find the MAC address. If it's 
+not there, then your computer will broadcast an ARP request to find out the MAC 
+address for the destination IP. Since this request is broadcast, all machines on 
+the LAN will receive it and examine the contents. If the IP address in the 
+request is their own, they'll reply. On receiving this information, your 
+computer will update it's ARP table to include the new information and will 
+then send out the frame (addressed with the destination host's MAC address).
+
+ARP operation for a remote host
+================================
+If the IP is not local then the gateway (router) will see this (remember, the 
+ARP request is broadcast so all hosts on the LAN will see the request). 
+The router will look in it's routing table and if it has a route to the 
+destination network, then it will reply with it's own MAC address.
+
+This is only the case if your own computer doesn't know anything about the 
+network topology. In most cases, your computer knows the subnet mask and 
+has a default gateway set. Because of this, your own computer can figure 
+out for itself that the packet is not destined for the local network. Instead,
+your computer will use the MAC address of the default gateway (which it 
+will either have in it's ARP table or have to send out an ARP request for 
+as outlined above). When the default gateway (router) receives the frame it 
+will see that the MAC address matches it's own, so the frame must be for it.
+The router will un-encapsulate the data link frame and pass the data part 
+up to the network layer. At the network layer, the router will see that the 
+destination IP address (contained in the header of the IP packet) does not 
+match it's own (remember, the IP address has not been touched at all in 
+this process since your computer created the IP packet). The router will 
+realise that this is a packet that is supposed to be routed. The router will 
+look in it's routing table for the closest match to the destination IP in order
+to figure out which interface to send the packet out on. When a match is found,
+the router will create a new data link frame addressed to the next hop (and if
+the router doesn't know the hardware address for the next hop it will request 
+it using the appropriate means for the technology in question). The data portion
+of this frame will contain the complete IP packet (where the destination IP 
+address remains unchanged) and is sent out the appropriate interface. This process
+will continue at each router along the way until the information reaches a router
+connected to the destination network. It will see that the packet is addressed
+to a host that's on a directly connected network (the closest match you can get
+for an address, short of the packet being addressed to you). It will send out
+an ARP request for MAC address of the destination IP (assuming it doesn't 
+already have it in it's table) and then address it to the destination's MAC 
+address.
+
+Now then, I did slightly gloss over 1 part in the above explanation and that's 
+the part about the router finding out the hardware address for the next hop. 
+I just didn't want to disturb the flow with entering into that there. How the 
+router does this will depend on what type of connection (and in some cases, 
+what protocol and/or encapsulation is used on the connection). In some cases, 
+this will be a hard set value (like a frame relay pvc) within the configuration
+of the router. In some cases, you don't even need a hardware address 
+(like any point to point connection, there's only 1 possible host you could 
+send it to), in those cases the router will just create a data link frame 
+appropriate for the connection and it won't even need to be addressed. This 
+is why the OSI model is good. It's layered so that any layer can change and 
+as long as it takes in information in a standard way (the way the layer 
+above wants to send it) and spits out information in a standard way (the way 
+the layer below wants to receive it), then it's all good. When Frame Relay 
+came along nothing changed with the way you had to address IP packets, all 
+of the changes took place at the data link and physical layers. If some new 
+type of connection comes along in the future, only the data link and physical
+layers will likely change. When we go to IPv6, only the network layer should
+change (it probably won't but that's more to do with how the layers tend to
+blur, but if it were truly layered that would be the case).
+
+Putting it all together
+=========================
+Anyways, since I feel like doing an example here's one showing the whole 
+process. In the original post, I had used IP addresses from the 10.x.x.x 
+range (which is a reserved range for private networks) with a subnet mask
+of 255.255.255.0. This seemed to cause some confusion (both because of the
+misconception that the 10.x.x.x range is non-routable and because I was 
+using a class C subnet mask for a class A network) both of these are valid 
+and would work but I've decided to change this so that I'm using non-reserved
+(ie, real) IPs from class C networks. I figure that this will help reduce 
+the confusion in this example, and I can clear up the rest in another article
+or 2. Needless to say then, if you want to try this on your own network, 
+don't connect it to the internet! IP conflicts are just plain evil and can 
+screw up lots of stuff. If you want to try this in a home lab that is 
+connected to the internet then put the whole network behind some kind of a 
+firewall and use the reserved IPs. Or, if you're lucky enough to have a 
+block of real IPs, use them. The bottom line is don't use IPs that haven't
+been assigned to you on the internet.
+
+Your computer has an address of 200.0.1.2, it's connected to the 200.0.1.0 
+network (I'm assuming a subnet mask of 255.255.255.0, we'll call this 
+network 1) which is an ethernet network. Your default gateway is a router
+(router a) which has an address of 200.0.1.1. That router is connected to
+the 200.0.1.0 network and the 200.0.2.0 (network 2) network (the interface
+connected to the 200.0.2.0 network will have an address of 200.0.2.1).
+The network 2 is also an ethernet network. Also connected to network 2 
+is another router (router b) which has the address (for the interface 
+connected to network 2 at least) of 200.0.2.2. Router b is also connected
+to network 3 (200.0.3.0). Router b's interface on network 3 has the address
+of 200.0.3.1. Here's a (probably bad) ASCII diagram to illustrate:
+
+
+         Router        Router
+           a             b
+-----------O-------------O------------
+Network 1    Network 2       Network 3
+(200.0.1.0)   (200.0.2.0)      (200.0.3.0)
+
+Now then, your computer (on network 1 with an address of 200.0.1.2) wants 
+to send some data to a computer on network 3 (with an address of 200.0.3.2).
+We'll assume that none of the info in already cached in an ARP table on any
+of the machines or routers (a big assumption but it's mine to make!). Your 
+computer will create an IP packet addressed to 200.0.3.2. That packet will 
+be sent to the data link layer where it needs a MAC address. Based on the 
+subnet mask, your computer will know that the destination computer isn't 
+on the same local network. So, your computer will send out an ARP request 
+for the default gateway's MAC address (ie, what's the MAC for 200.0.1.1?).
+On receiving the MAC address, your computer will send out the IP packet 
+(still addressed to 200.0.3.2) encapsulated within a data link frame that 
+is addressed to the MAC address of router a's interface on network 1 
+(because routers have more than 1 interface they can have more than 1 MAC 
+address, in this case each router has 2 ethernet interface each with 
+it's own unique MAC address). Router a will receive this frame and send 
+the data portion up to the network layer (layer 3). At the network layer,
+router a will see that the packet (which is addressed to 200.0.3.2) 
+is not addressed to router a. Router a will look in it's routing table 
+to find out where to send the packet. The routing table will show that 
+network 3 (the closest match to 200.0.3.2) is reachable via network 2. 
+The routing table will also show the IP address for the next hop is 200.0.2.2.
+Router a will send out an ARP request onto network 2 asking for router 
+b's MAC address (well at least for the interface connected to network 2).
+On receiving this, router a will send the IP packet (still addressed to 
+200.0.3.2, nothing's changed here) encapsulated in a data link frame 
+addressed to router b's MAC address. When router b receives this frame it 
+will do the same thing that router a did, it will send the IP packet 
+up to the network layer and see that the packet is not addressed to 
+router b (the packet is still addressed to 200.0.3.2). Router b will 
+then look up in it's routing table for the closest match and see that it 
+is directly connected to network 3, so there isn't a next hop router 
+to send it to. Router b will send out an ARP request to learn the MAC 
+address for 200.0.3.2. When this is received, router b will send out the 
+IP packet (again, this is still addressed to 200.0.3.2) encapsulated 
+within a data link frame that is addressed to the MAC address of the 
+destination computer. The destination computer will see that the data link 
+frame is addressed to it and will pass the IP packet to the network layer. 
+At the network layer, the IP address will also match that of the computer 
+and the data from the IP packet will be passed up to the transport layer. 
+Each layer will examine the header and determine where to pass it up to 
+until eventually, the data reaches the application running on the destination
+computer that has been waiting for the data.
+
+What you'll notice through this whole process is that the IP address never
+changes. The IP packet is always addressed to 200.0.3.2. However, at the data
+link layer, the address used changes at each hop (it's always addressed 
+to the next hop). As you go up through the layers, you get more and more 
+specific about where the data is supposed to be going. At the data link 
+layer this is very vague, it's basically just, "here's who to pass it 
+on to, they should know what to do with it". At the network layer you get 
+more specific (this is the exact computer I want to send this to). Above 
+that you get more specific (is it TCP or UDP?, what port?, etc) 
