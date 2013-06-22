@@ -6,6 +6,9 @@
     5. mq_setattr
     6. mq_close
     7. mq_unlink
+
+    To compile this code :
+    gcc posix_message_queue.c -lrt
 */
 
 #include <mqueue.h>
@@ -89,7 +92,7 @@ int main (int argc, char *argv[]) {
 
 
     /* Function used to receive the message from the message queue 
-       Te 3rd argument of the mesasage queue bust be greater than mq_msgsize 
+       The 3rd argument of the mesasage queue must be greater than mq_msgsize 
        value. If not we will get a error " Message too long" */
     ret = mq_receive(mqdes, buf_recv, attr.mq_msgsize + 1 , 0);
     if(ret == -1){
