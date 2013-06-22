@@ -13,14 +13,18 @@ SYNOPSIS
        Link with -lrt.
 
 DESCRIPTION
-       mq_unlink()  removes  the specified message queue name.  The message queue name is removed immediately.  The queue itself is destroyed once any other
-       processes that have the queue open close their descriptors referring to the queue.
+       mq_unlink()  removes  the specified message queue name.  
+       The message queue name is removed immediately.  The queue 
+       itself is destroyed once any other processes that have 
+       the queue open close their descriptors referring to the queue.
 
 RETURN VALUE
-       On success mq_unlink() returns 0; on error, -1 is returned, with errno set to indicate the error.
+       On success mq_unlink() returns 0; on error, -1 is returned, 
+       with errno set to indicate the error.
 
 ERRORS
-       EACCES The caller does not have permission to unlink this message queue.
+       EACCES The caller does not have permission to unlink this 
+       message queue.
 
        ENAMETOOLONG
               name was too long.
@@ -31,11 +35,13 @@ CONFORMING TO
        POSIX.1-2001.
 
 SEE ALSO
-       mq_close(3), mq_getattr(3), mq_notify(3), mq_open(3), mq_receive(3), mq_send(3), mq_overview(7)
+       mq_close(3), mq_getattr(3), mq_notify(3), mq_open(3), mq_receive(3),
+       mq_send(3), mq_overview(7)
 
 COLOPHON
-       This page is part of release 3.35 of the Linux man-pages project.  A description of the project, and information about reporting bugs, can  be  found
-       at http://man7.org/linux/man-pages/.
+       This page is part of release 3.35 of the Linux man-pages project.  
+       A description of the project, and information about reporting 
+       bugs, can  be  found at http://man7.org/linux/man-pages/.
 
 
 
