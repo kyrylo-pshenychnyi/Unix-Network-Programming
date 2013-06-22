@@ -1,0 +1,21 @@
+   System V IPC                            |            Posix Message queue
+------------------------------------------------------------------------------------
+1. Inability to notify a process when a    | 1. Ability to notify a process, when a mesage  
+   message is placed on  message queue.    |    is placed on the message queue.
+   eg.  No asynchonous event notification. |  eg.  Allow asynchronous event notification
+                                           |
+2. Message reading is based on type feild. | 2. Message reading is based on priority basis.
+   This feature allow to read any message  |  mq_receive alawys returned the oldest message of   
+   from the message queue.                 |  of highest priority, whiich is a unsigned integer
+                                           |  less than MQ_PRIO_MAX. In Posix this upper limit 
+                                           |  is atleast 32.
+
+
+
+
+
+
+NOTE:
+ size_t is not not know as it is an int or long int. We cast the value to the long int.
+On a 64bit implimentation int will be a 32-bit  interger but size_t and long , both will be 64 bit 
+integrers.
