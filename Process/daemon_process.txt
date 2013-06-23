@@ -1,0 +1,21 @@
+For simple unix programmers like me, a daemon is just a process 
+that runs in the background, usually waiting for something to 
+happen that it is capable of working with, like a printer daemon 
+is waiting for print commands.
+
+
+In a Unix environment, the parent process of a daemon is often, 
+but not always, the init process. A daemon is usually created by 
+a process forking a child process and then immediately exiting, 
+thus causing init to adopt the child process. In addition, a 
+daemon or the operating system typically must perform other 
+operations, such as dissociating the process from any controlling 
+terminal (tty). Such procedures are often implemented in various 
+convenience routines such as daemon(3) in Unix.
+
+
+Systems often start daemons at boot time and serve the function of 
+responding to network requests, hardware activity, or other programs 
+by performing some task. Daemons can also configure hardware (like 
+udevd on some GNU/Linux systems), run scheduled tasks (like cron), 
+and perform a variety of other tasks.
