@@ -21,7 +21,7 @@ TCP Header Format
         |                              Sequence Number                       |
         ----------------------------------------------------------------------
         |       |              |U|A|P|R|S|F |                                |
-        |Data   |  Reserved    |R|C|S|S|Y|I |       Window                   |                    
+        |Data   |  Reserved    |R|C|S|S|Y|I |       Window                   |
         |Offset |              |G|K|H|T|N|N |                                |
         ----------------------------------------------------------------------
         |              Checksum             |        urgent pointer          |
