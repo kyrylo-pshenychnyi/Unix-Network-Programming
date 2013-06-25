@@ -38,7 +38,7 @@ int main(int argc, char * argv[]){
 	struct sockaddr_in server, client;
 	
 	memset(&server,0,sizeof(server));
-	memset(&server,0,sizeof(server));
+	memset(&client,0,sizeof(client));
 
 	if( argc < 2 ){
 		printf("Usage: ./srv <port number>\n");
@@ -81,7 +81,7 @@ int main(int argc, char * argv[]){
 		printf("Success in listen system call\n");
 	}
 
-// 4. Bind system call
+// 4. Accept system call
 
 	printf("Waiting for a client request ... \n");
 
