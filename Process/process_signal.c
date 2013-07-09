@@ -70,18 +70,7 @@ int main(int argc, char **argv)
        }*/
 
     if(pid == 0){
-        #if 0
-        sprintf(buff,"Child (pid = %d) about to signal self (sigusr1 = %d)\n", (int)getpid(), (int)sigusr1);
-        write(1, buff, strlen(buff));
-        fflush(0);
-        kill(pid, SIGUSR1);
-        sprintf(buff,"Child (%d) about to pause() (sigusr1 = %d)\n", (int)getpid(), (int)sigusr1);
-        write(1, buff, strlen(buff));
-        fflush(0);
-        #endif 
-
         pause();
-
         /* I'm the child */
         printf("Child's turn %d!\n", (int)getpid());
         lseek(fd, 0L, SEEK_SET);
@@ -93,9 +82,14 @@ int main(int argc, char **argv)
                 exit(7);
             }
         }
-        printf("Child signalling parent\n");
-        kill(pid,SIGUSR1);
-        printf("Child exiting (status = 37)\n");
+        /* Close the file */
+        if(close(fd) < 0){
+            perror(argv[2]);
+            exit(38);
+        } else {
+            printf("close fd in %d\n", (int)getpid());
+        }   
+        printf("Child exiting (status = 0x25)\n");
         exit(37);
     }
     else{
@@ -110,22 +104,23 @@ int main(int argc, char **argv)
                 exit(7);
             }
         }
+        printf("Parent signalling Child\n");
         kill(pid, SIGUSR1);
         /* Reap the child */
         int corpse = wait(&child_status);
-        printf("waiting over: pid = %d, status = 0x%.4X\n", corpse, child_status);
-    }
+        printf("waiting over: pid = %d, status = 0x%.2X\n", corpse, child_status);
 
-    /* Close the file */
-    if(close(fd) < 0){
-        perror(argv[2]);
-        exit(8);
-    } else {
-        printf("close fd in %d\n", (int)getpid());
-    }
+        /* Close the file */
+        if(close(fd) < 0){
+            perror(argv[2]);
+            exit(8);
+        } else {
+            printf("close fd in %d\n", (int)getpid());
+        }
 
-    printf("%d exiting\n", (int)getpid());
-    return(0);
+        printf("%d exiting\n", (int)getpid());
+        return(0);
+    }
 }
 
 void displayUsage(FILE *fp, const char *arg)
@@ -139,14 +134,5 @@ void displayUsage(FILE *fp, const char *arg)
 
 void my_handler(int sig)
 {
-    /* Re-registering the handler */
-    if(signal(sig, my_handler) == SIG_ERR){
-        perror("Could not set a handler for SIGUSR1");
-        exit(4);
-    }
-    sigusr1 = 1;
-    #if 0
-    printf("In signal handler (pid %d)\n", (int)getpid());
-    fflush(0);
-    #endif
+    printf("Caught the signal %d in %d\n",sig, getpid());
 }
