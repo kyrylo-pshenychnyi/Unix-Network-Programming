@@ -1,5 +1,4 @@
 
-
 Link 1:
 ======================
 	ftp://ftp.sas.com/techsup/download/SASC/share5958-59/S5958v2.pdf
@@ -8,21 +7,22 @@ Link 2:
 ======================
 	http://alas.matf.bg.ac.rs/manuals/lspe/mode=1.html
 
-
 Link 3: bind Error: Address already in use
 ===========================================
 	http://hea-www.harvard.edu/~fine/Tech/addrinuse.html
 	
-
 Link 4: 
 =======================================
-http://beej.us/guide/bgnet/output/html/singlepage/bgnet.html
+	http://beej.us/guide/bgnet/output/html/singlepage/bgnet.html
 
 Link 5: All for socket programming
 =========================================
-http://www.tenouk.com/cnlinuxsockettutorials.html
+	http://www.tenouk.com/cnlinuxsockettutorials.html
 
-Link6: 5 Pit falls of socket programming
+Link 6: 5 Pit falls of socket programming
+========================================	
+	http://www.ibm.com/developerworks/library/l-sockpit/
+
+Link 7: Networking 
 ========================================
-http://www.ibm.com/developerworks/library/l-sockpit/
-
+http://www.scribd.com/doc/120274805/QGNP
