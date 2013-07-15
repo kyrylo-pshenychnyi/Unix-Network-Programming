@@ -1,0 +1,19 @@
+I_O_Multiplexing is used in networking in following senario
+sol:
+1. When a client is handling multiple discriptors ( Normally
+a interactive input and a network socket), I/O multiplexing 
+should be used.
+
+2. It is possible but rare, for a client to handle multiple 
+sockets at the same time.
+
+3. If TCP server handles both a listening socket and its 
+connected socket, I/O multipleing is normally used.
+
+4. If server handles both TCP and UDP, I/O multiplexing is used.
+
+5. If server handles multiple services and perhaps multiple 
+protocols, I/O multiplexing is used.
+
+
+
