@@ -56,13 +56,13 @@ int main( int argc, char * argv[]){
 
     printf("The value of FD_SETSIZE = %d\n",FD_SETSIZE);
     printf("The value of socketfd = %d\n",socketfd);
+    max_fd = socketfd;
     for(i = 0; i< FD_SETSIZE ; i++){
         client[i] = -1;
     }
     FD_ZERO(&allset);
     FD_SET(socketfd, &allset);
 
-    max_fd = socketfd;
     int maxi = -1;
     int nready, n;
     for (; ; ){
@@ -79,7 +79,7 @@ int main( int argc, char * argv[]){
         int a = 0;
         int b = 0;
         int c = 0;
-        for(a = 0; a < FD_SETSIZE; a++){
+        for(a = 3; a < FD_SETSIZE; a++){
             if(FD_ISSET(a,&rset)){
                 printf("1 ");
             } else {
@@ -131,21 +131,32 @@ int main( int argc, char * argv[]){
                 continue;
             }
         }
-        for (i = 0; i <= max_fd ; i++) { /* check all clients for data */
-            if ( (socketfd = client[i]) < 0)
+        for (i = 0; i <= maxi ; i++) { /* check all clients for data */
+            printf("==================== STEP 1 =====================\n");
+            if ( (socketfd = client[i]) < 0){
+                printf("==================== STEP 2 =====================\n");
                 continue;
+            }
             if (FD_ISSET(socketfd, &rset)) {
-                if ( (n = read(socketfd, buf, BUFF_SIZE)) == 0) {
+                memset(buf, 0, sizeof(buf));
+                printf("==================== STEP 3 =====================\n");
+                n = read(socketfd, buf, BUFF_SIZE);
+                if ((n == 0) || ( n == -1)  ) {
+                    perror("Read:\n");
+                    printf("==================== STEP 4 =====================\n");
                         /*4connection closed by client */
                     close(socketfd);
                     FD_CLR(socketfd, &allset);
                     client[i] = -1;
                 } else
+                    printf("==================== STEP 5 =====================\n");
                     printf("Data read from client [ %s ] with socket %d\n", buf, socketfd); 
                     if(write(socketfd, buf, n) == -1){
+                        printf("==================== STEP 6 =====================\n");
                         perror("Write:\n");
                         exit(6);
                 } 
+                printf("==================== STEP 7 =====================\n");
 
                 if (--nready <= 0)
                     break; /* no more readable descriptors */
