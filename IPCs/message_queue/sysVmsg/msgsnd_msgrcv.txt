@@ -1,4 +1,15 @@
 Synopsis
+===========
+Limits
+=======
+                                                  Dabiun Unix 4.0B
+                                                  =================
+Maximum number of bytes per message:               8192
+maximum number of bytes on any one message queue:  16384
+maximum number of message queue systemwide:        64
+maximum number of message systemwide:              40
+
+
 
 #include <sys/types.h>
 #include <sys/ipc.h>
