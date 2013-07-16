@@ -142,7 +142,7 @@ int main( int argc, char * argv[]){
                     FD_CLR(wrfd, &allset);
                     client[i] = -1;
                 } else {
-                    printf("Data read from client [ %s ] with socket %d\n", buf, wrfd); 
+                    printf("Data read from socket [ %d ] => %s\n",wrfd, buf);  
                     int ret;
                     ret = write(wrfd, buf, n); 
                     if(ret != n){
